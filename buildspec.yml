@@ -1,0 +1,27 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18  # Use the latest stable Node.js version
+    commands:
+      - echo "Installing dependencies..."
+      - npm install
+
+  build:
+    commands:
+      - echo "Building the application..."
+      - npm run build || echo "No build step defined, skipping."
+
+  post_build:
+    commands:
+      - echo "Zipping the application for deployment..."
+      - zip -r app.zip . -x "*.git*" "node_modules/*"
+      - echo "Build completed, moving to the artifact phase."
+
+artifacts:
+  files:
+    - app.zip
+    - appspec.yml  # Required for AWS CodeDeploy
+    - scripts/**    # Deployment scripts
+  discard-paths: yes
